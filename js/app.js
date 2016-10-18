@@ -1,4 +1,4 @@
-var app = {
+var bmrCalculator = {
   user: {
     activityLevel: 3,
     age: 33,
@@ -25,7 +25,7 @@ var app = {
     if (this.user.sex === 'male') {
       bmr = 66 + (6.23 * this.user.weight) + (12.7 * this.user.height) - (6.8 * this.user.age);
     } else if (this.user.sex === 'female') {
-      bmr = 655 + (4.35 * this.user.weight) + (4.7 * this.user.weight) - (4.7 * this.user.age);
+      bmr = 655 + (4.35 * this.user.weight) + (4.7 * this.user.height) - (4.7 * this.user.age);
     }
 
     return bmr;
@@ -76,7 +76,17 @@ var app = {
   },
 
   setSexTo: function setSexTo(sex) {
-    this.user.sex = sex;
+    if (typeof sex !== 'string') {
+      throw new Error('Expected argument is not of type string.');
+    }
+
+    sex = sex.toLowerCase();
+
+    if (sex !== 'male' && sex !== 'female') {
+      throw new Error('Function will only accept male or female as a parameter.');
+    }
+
+    this.user.sex = sex.toLowerCase();
     this.displayUserInfo();
   },
 
