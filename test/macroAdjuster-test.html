@@ -1,11 +1,103 @@
 <script src="../js/app.js"></script>
 <script src="../test/simpleTest.js"></script>
-
 <script>
+  // Requirements
+  //    getters
+  //      - It should calculate male and female's BMR
+  //      - It should calculate male and female's adjusted BMR
+  //    setters
+  //      - It should allow you to set the activityLevel
+  //      - It should allow you to set the age
+  //      - It should allow you to set the height
+  //      - It should allow you to set the weight
+  //      - It should allow you to set the sex
+
   tests({
-    'It should pass...': function() {},
-    'It should fail...': function() {
-      fail();
+    'It should return the user\'s BMR.': function() {
+      var maleUser = {
+        activityLevel: 1,
+        age: 1,
+        height: 1,
+        sex: 'male',
+        weight: 1
+      };
+      var femaleUser = {
+        activityLevel: 1,
+        age: 1,
+        height: 1,
+        sex: 'female',
+        weight: 1
+      };
+      bmrCalculator.user = maleUser;
+      eq(78, bmrCalculator.getBMR());
+      bmrCalculator.user = femaleUser;
+      eq(659, bmrCalculator.getBMR());
+    },
+    'It should return the user\'s adjusted BMR based on activity level.': function() {
+      var maleUser = {
+        activityLevel: 1,
+        age: 1,
+        height: 1,
+        sex: 'male',
+        weight: 1
+      };
+      var femaleUser = {
+        activityLevel: 1,
+        age: 1,
+        height: 1,
+        sex: 'female',
+        weight: 1
+      };
+      bmrCalculator.user = maleUser;
+      eq(94, bmrCalculator.getAdjustedBMR());
+      bmrCalculator.user = femaleUser;
+      eq(791, bmrCalculator.getAdjustedBMR());
+    },
+    'It should set the user\'s activityLevel property.': function() {
+      bmrCalculator.setActivityLevelTo(1);
+      eq(1, bmrCalculator.user.activityLevel);
+    },
+
+    'It should set the user\'s age property.': function() {
+      bmrCalculator.setAgeTo(1);
+      eq(1, bmrCalculator.user.age);
+    },
+
+    'It should set the user\'s height property.': function() {
+      bmrCalculator.setHeightTo(1);
+      eq(1, bmrCalculator.user.height);
+    },
+
+    'It should set the user\'s weight property.': function() {
+      bmrCalculator.setWeightTo(1);
+      eq(1, bmrCalculator.user.weight);
+    },
+
+    'It should set the user\'s sex property.': function() {
+      bmrCalculator.setSexTo('MALE');
+      eq('male', bmrCalculator.user.sex);
+      bmrCalculator.setSexTo('FEMALE');
+      eq('female', bmrCalculator.user.sex);
+    },
+
+    'If argument for setSexTo() is not a string, throw TypeError.': function() {
+      var isTypeError = false;
+      try {
+        bmrCalculator.setSexTo(1);
+      } catch(e) {
+        isTypeError = e instanceof TypeError;
+      }
+      eq(true, isTypeError);
+    },
+
+    'If argument for setSexTo() is not `male` or `female`, throw Error.': function() {
+      var isError = false;
+      try {
+        bmrCalculator.setSexTo('foo');
+      } catch(e) {
+        isError = e instanceof Error;
+      }
+      eq(true, isError);
     }
   });
 </script>

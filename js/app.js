@@ -20,19 +20,24 @@ var bmrCalculator = {
   },
 
   getBMR: function getBMR() {
-    var bmr = null;
+    var age    = this.user.age || undefined;
+    var height = this.user.height || undefined;
+    var weight = this.user.weight || undefined;
+    var sex    = this.user.sex || undefined;
+    var bmr    = null;
 
-    if (this.user.sex === 'male') {
-      bmr = 66 + (6.23 * this.user.weight) + (12.7 * this.user.height) - (6.8 * this.user.age);
-    } else if (this.user.sex === 'female') {
-      bmr = 655 + (4.35 * this.user.weight) + (4.7 * this.user.height) - (4.7 * this.user.age);
+    if (sex === 'male') {
+      bmr = 66 + (6.23 * weight) + (12.7 * height) - (6.8 * age);
+    } else if (sex === 'female') {
+      bmr = 655 + (4.35 * weight) + (4.7 * height) - (4.7 * age);
     }
 
+    bmr = Math.round(bmr);
     return bmr;
   },
 
-  getAdjustedBMR: function getAdjustedBMR(activityLevel) {
-    activityLevel = activityLevel || 0;
+  getAdjustedBMR: function getAdjustedBMR() {
+    var activityLevel = this.user.activityLevel || undefined;
 
     var bmr = this.getBMR();
     var adjustedBMR = null;
@@ -57,6 +62,7 @@ var bmrCalculator = {
         return bmr;
     }
 
+    adjustedBMR = Math.round(adjustedBMR);
     return adjustedBMR;
   },
 
@@ -75,23 +81,23 @@ var bmrCalculator = {
     this.displayUserInfo();
   },
 
+  setWeightTo: function setWeightTo(weight) {
+    this.user.weight = weight;
+    this.displayUserInfo();
+  },
+
   setSexTo: function setSexTo(sex) {
     if (typeof sex !== 'string') {
-      throw new Error('Expected argument is not of type string.');
+      throw new TypeError('Expected argument is not of type string.');
     }
 
     sex = sex.toLowerCase();
 
     if (sex !== 'male' && sex !== 'female') {
-      throw new Error('Function will only accept male or female as a parameter.');
+      throw new Error('Function expects a string equal to `male` or `female`.');
     }
 
-    this.user.sex = sex.toLowerCase();
-    this.displayUserInfo();
-  },
-
-  setWeightTo: function setWeightTo(weight) {
-    this.user.weight = weight;
+    this.user.sex = sex;
     this.displayUserInfo();
   }
 };
