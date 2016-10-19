@@ -4,7 +4,7 @@
   // Requirements
   //    getters
   //      - It should calculate male and female's BMR
-  //      - It should calculate male and female's adjusted BMR
+  //      - It should calculate male and female's adjusted  BMR
   //    setters
   //      - It should allow you to set the activityLevel
   //      - It should allow you to set the age
@@ -13,6 +13,8 @@
   //      - It should allow you to set the sex
 
   tests({
+
+    // BMR Calculator
     'It should return the user\'s BMR.': function() {
       var maleUser = {
         activityLevel: 1,
@@ -98,6 +100,58 @@
         isError = e instanceof Error;
       }
       eq(true, isError);
+    },
+
+    // Macro Calculator
+    'It should set the `isBulking` property of the macroCalculator object.': function() {
+      eq(false, macroCalculator.isBulking);
+      macroCalculator.setisBulkingTo(true);
+      eq(true, macroCalculator.isBulking);
+    },
+
+    'It should set the `startingBMR` property of the macroCalculator object.': function() {
+      macroCalculator.setStartingBMRTo();
+      eq(null, macroCalculator.startingBMR);
+      macroCalculator.setStartingBMRTo(0);
+      eq(null, macroCalculator.startingBMR);
+      macroCalculator.setStartingBMRTo(1500);
+      eq(1500, macroCalculator.startingBMR);
+    },
+
+    'It should set the `startingWeight` property of the macroCalculator object.': function() {
+      macroCalculator.setStartingWeightTo();
+      eq(null, macroCalculator.startingWeight);
+      macroCalculator.setStartingWeightTo(0);
+      eq(null, macroCalculator.startingWeight);
+      macroCalculator.setStartingWeightTo(150);
+      eq(150, macroCalculator.startingWeight);
+    },
+
+    'It should set the `desiredTotalFatInPercent` property of the macroCalculator object.': function() {
+      macroCalculator.setDesiredTotalFatInPercentTo();
+      eq(null, macroCalculator.desiredTotalFatInPercent);
+      macroCalculator.setDesiredTotalFatInPercentTo(0);
+      eq(null, macroCalculator.desiredTotalFatInPercent);
+      macroCalculator.setDesiredTotalFatInPercentTo(25);
+      eq(25, macroCalculator.desiredTotalFatInPercent);
+    },
+
+    'It should set the `desiredProteinPerBodyWeight` property of the macroCalculator object.': function() {
+      macroCalculator.setDesiredProteinPerBodyWeightTo();
+      eq(null, macroCalculator.desiredProteinPerBodyWeight);
+      macroCalculator.setDesiredProteinPerBodyWeightTo(0);
+      eq(null, macroCalculator.desiredProteinPerBodyWeight);
+      macroCalculator.setDesiredProteinPerBodyWeightTo(.82);
+      eq(.82, macroCalculator.desiredProteinPerBodyWeight);
+    },
+
+    'It should set the `desiredWeeklyWeightChange` property of the macroCalculator object.': function() {
+      macroCalculator.setDesiredWeeklyWeightChangeTo();
+      eq(null, macroCalculator.desiredWeeklyWeightChange);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(0);
+      eq(null, macroCalculator.desiredWeeklyWeightChange);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(1.5);
+      eq(1.5, macroCalculator.desiredWeeklyWeightChange);
     }
   });
 </script>

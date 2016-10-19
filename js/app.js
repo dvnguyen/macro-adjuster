@@ -101,3 +101,42 @@ var bmrCalculator = {
     this.displayUserInfo();
   }
 };
+
+var macroCalculator = {
+  desiredProteinPerBodyWeight: null,
+  desiredTotalFatInPercent: null,
+  desiredWeeklyWeightChange: null,
+  isBulking: false,
+  startingBMR: null,
+  startingWeight: null,
+
+  setDesiredProteinPerBodyWeightTo: function setDesiredProteinPerBodyWeightTo(value) {
+    value = value || null;
+    return this.desiredProteinPerBodyWeight = value;
+  },
+
+  setDesiredTotalFatInPercentTo: function setDesiredTotalFatInPercentTo(percentage) {
+    percentage = percentage || null;
+    return this.desiredTotalFatInPercent = percentage;
+  },
+
+  setDesiredWeeklyWeightChangeTo: function setDesiredWeeklyWeightChangeTo(value) {
+    value = value || null;
+    return this.desiredWeeklyWeightChange = value;
+  },
+
+  setisBulkingTo: function setisBulkingTo(boolean) {
+    boolean = boolean || false;
+    return this.isBulking = boolean;
+  },
+
+  setStartingBMRTo: function setStartingBMRTo(value) {
+    value = value || null;
+    return this.startingBMR = value;
+  },
+
+  setStartingWeightTo: function setStartingWeightTo(pounds) {
+    pounds = pounds || null;
+    return this.startingWeight = pounds;
+  }
+};
