@@ -103,12 +103,18 @@ var bmrCalculator = {
 };
 
 var macroCalculator = {
+  desiredCardioFromWeeklyDeficitInPercentage: null,
   desiredProteinPerBodyWeight: null,
   desiredTotalFatInPercent: null,
   desiredWeeklyWeightChange: null,
   isBulking: false,
   startingBMR: null,
   startingWeight: null,
+
+  setDesiredCardioFromWeeklyDeficitInPercentageTo: function setDesiredCardioFromWeeklyDeficitInPercentageTo(percentage) {
+    percentage = percentage || null;
+    return this.desiredCardioFromWeeklyDeficitInPercentage = percentage;
+  },
 
   setDesiredProteinPerBodyWeightTo: function setDesiredProteinPerBodyWeightTo(value) {
     value = value || null;
