@@ -111,7 +111,64 @@ var macroCalculator = {
   startingBMR: null,
   startingWeight: null,
 
-  setDesiredCardioFromWeeklyDeficitInPercentageTo: function setDesiredCardioFromWeeklyDeficitInPercentageTo(percentage) {
+  resetProperties: function resetProperties() {
+    this.desiredCardioFromWeeklyDeficitInPercentage = null;
+    this.desiredProteinPerBodyWeight                = null;
+    this.desiredTotalFatInPercent                   = null;
+    this.desiredWeeklyWeightChange                  = null;
+    this.isBulking                                  = false;
+    this.startingBMR                                = null;
+    this.startingWeight                             = null;
+  },
+
+  getDailyCarbNeeds: function getDailyCarbNeeds() {
+    var totalCalories     = this.getDailyCaloricNeeds();
+    var proteinInCalories = this.getDailyProteinNeeds() * 4;
+    var fatsInCalories    = this.getDailyFatNeeds() * 9;
+    return Math.round((totalCalories - proteinInCalories - fatsInCalories) / 4);
+  },
+
+  getDailyCaloricNeeds: function getDailyCaloricNeeds() {
+    return Math.round(this.getWeeklyCaloricNeeds() / 7);
+  },
+
+  getDailyFatNeeds: function getDailyFatNeeds() {
+    var totalDailyCalories = this.getDailyCaloricNeeds();
+    var fatPercentage      = this.desiredTotalFatInPercent * .01;
+    return Math.round((totalDailyCalories * fatPercentage) / 9);
+  },
+
+  getDailyProteinNeeds: function getDailyProteinNeeds() {
+    return Math.round(this.startingWeight * this.desiredProteinPerBodyWeight);
+  },
+
+  getWeeklyCardioCalories: function getWeeklyCardioCalories() {
+    if (this.isBulking) {
+      return 0;
+    }
+
+    var caloricDeficit   = this.getWeeklyCaloricDeficit();
+    var cardioPercentage = this.desiredCardioFromWeeklyDeficitInPercentage * .01;
+    return Math.abs(caloricDeficit * cardioPercentage);
+  },
+
+  getWeeklyCaloricDeficit: function getWeeklyCaloricDeficit() {
+    // return value must be negative for this.getWeeklyCaloricNeeds() to work properly
+    return this.desiredWeeklyWeightChange * -3500;
+  },
+
+  getWeeklyCaloricNeeds: function getWeeklyCaloricNeeds() {
+    var bmr = this.startingBMR;
+    var weeklyCaloricChange = this.isBulking ? this.getWeeklyCaloricSurplus() : this.getWeeklyCaloricDeficit();
+    var cardioCalories = this.getWeeklyCardioCalories();
+    return (bmr * 7) + weeklyCaloricChange + cardioCalories;
+  },
+
+  getWeeklyCaloricSurplus: function getWeeklyCaloricSurplus() {
+    return this.desiredWeeklyWeightChange * 2500;
+  },
+
+  setDesiredCardioFromWeeklyDeficitInPercentTo: function setDesiredCardioFromWeeklyDeficitInPercentTo(percentage) {
     percentage = percentage || null;
     return this.desiredCardioFromWeeklyDeficitInPercentage = percentage;
   },
@@ -128,10 +185,10 @@ var macroCalculator = {
 
   setDesiredWeeklyWeightChangeTo: function setDesiredWeeklyWeightChangeTo(value) {
     value = value || null;
-    return this.desiredWeeklyWeightChange = value;
+    return this.desiredWeeklyWeightChange = Math.abs(value);
   },
 
-  setisBulkingTo: function setisBulkingTo(boolean) {
+  setIsBulkingTo: function setIsBulkingTo(boolean) {
     boolean = boolean || false;
     return this.isBulking = boolean;
   },

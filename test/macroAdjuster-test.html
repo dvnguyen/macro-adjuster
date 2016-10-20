@@ -1,16 +1,6 @@
 <script src="../js/app.js"></script>
 <script src="../test/simpleTest.js"></script>
 <script>
-  // Requirements
-  //    getters
-  //      - It should calculate male and female's BMR
-  //      - It should calculate male and female's adjusted  BMR
-  //    setters
-  //      - It should allow you to set the activityLevel
-  //      - It should allow you to set the age
-  //      - It should allow you to set the height
-  //      - It should allow you to set the weight
-  //      - It should allow you to set the sex
 
   tests({
 
@@ -104,15 +94,17 @@
 
     // Macro Calculator
     'It should set the `desiredCardioFromWeeklyDeficitInPercentage` property of the macroCalculator object.': function() {
-      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentageTo();
+      macroCalculator.resetProperties();
+      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentTo();
       eq(null, macroCalculator.desiredCardioFromWeeklyDeficitInPercentage);
-      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentageTo(0);
+      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentTo(0);
       eq(null, macroCalculator.desiredCardioFromWeeklyDeficitInPercentage);
-      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentageTo(20);
+      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentTo(20);
       eq(20, macroCalculator.desiredCardioFromWeeklyDeficitInPercentage);
     },
 
     'It should set the `desiredProteinPerBodyWeight` property of the macroCalculator object.': function() {
+      macroCalculator.resetProperties();
       macroCalculator.setDesiredProteinPerBodyWeightTo();
       eq(null, macroCalculator.desiredProteinPerBodyWeight);
       macroCalculator.setDesiredProteinPerBodyWeightTo(0);
@@ -122,6 +114,7 @@
     },
 
     'It should set the `desiredTotalFatInPercent` property of the macroCalculator object.': function() {
+      macroCalculator.resetProperties();
       macroCalculator.setDesiredTotalFatInPercentTo();
       eq(null, macroCalculator.desiredTotalFatInPercent);
       macroCalculator.setDesiredTotalFatInPercentTo(0);
@@ -131,21 +124,24 @@
     },
 
     'It should set the `desiredWeeklyWeightChange` property of the macroCalculator object.': function() {
+      macroCalculator.resetProperties();
       macroCalculator.setDesiredWeeklyWeightChangeTo();
-      eq(null, macroCalculator.desiredWeeklyWeightChange);
+      eq(0, macroCalculator.desiredWeeklyWeightChange);
       macroCalculator.setDesiredWeeklyWeightChangeTo(0);
-      eq(null, macroCalculator.desiredWeeklyWeightChange);
+      eq(0, macroCalculator.desiredWeeklyWeightChange);
       macroCalculator.setDesiredWeeklyWeightChangeTo(1.5);
       eq(1.5, macroCalculator.desiredWeeklyWeightChange);
     },
 
     'It should set the `isBulking` property of the macroCalculator object.': function() {
+      macroCalculator.resetProperties();
       eq(false, macroCalculator.isBulking);
-      macroCalculator.setisBulkingTo(true);
+      macroCalculator.setIsBulkingTo(true);
       eq(true, macroCalculator.isBulking);
     },
 
     'It should set the `startingBMR` property of the macroCalculator object.': function() {
+      macroCalculator.resetProperties();
       macroCalculator.setStartingBMRTo();
       eq(null, macroCalculator.startingBMR);
       macroCalculator.setStartingBMRTo(0);
@@ -155,12 +151,134 @@
     },
 
     'It should set the `startingWeight` property of the macroCalculator object.': function() {
+      macroCalculator.resetProperties();
       macroCalculator.setStartingWeightTo();
       eq(null, macroCalculator.startingWeight);
       macroCalculator.setStartingWeightTo(0);
       eq(null, macroCalculator.startingWeight);
       macroCalculator.setStartingWeightTo(150);
       eq(150, macroCalculator.startingWeight);
+    },
+
+    'If cutting, it should return weekly cardio calories.': function() {
+      macroCalculator.resetProperties();
+      macroCalculator.setIsBulkingTo(false);
+      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentTo(30);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(1);
+      eq(1050, macroCalculator.getWeeklyCardioCalories());
+    },
+
+    'If cutting, .getWeeklyCaloricDeficit() should return 0.': function() {
+      macroCalculator.resetProperties();
+      macroCalculator.setIsBulkingTo(true);
+      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentTo(30);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(1);
+      eq(0, macroCalculator.getWeeklyCardioCalories());
+    },
+
+    'It should return a weekly deficit.': function() {
+      macroCalculator.resetProperties();
+      macroCalculator.setDesiredWeeklyWeightChangeTo(1);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(-1);
+      eq(-3500, macroCalculator.getWeeklyCaloricDeficit());
+    },
+
+    'It should return a weekly surplus.': function() {
+      macroCalculator.resetProperties();
+      macroCalculator.setDesiredWeeklyWeightChangeTo(1);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(-1);
+      eq(2500, macroCalculator.getWeeklyCaloricSurplus());
+    },
+
+    'It should return the total weekly calories.': function() {
+      // Test Diet for cutting
+      macroCalculator.resetProperties();
+      macroCalculator.setIsBulkingTo(false);
+      macroCalculator.setStartingBMRTo(3000);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(1);
+      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentTo(30);
+      eq(18550, macroCalculator.getWeeklyCaloricNeeds());
+
+      // Test Diet for bulking
+      macroCalculator.resetProperties();
+      macroCalculator.setIsBulkingTo(true);
+      macroCalculator.setStartingBMRTo(3000);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(1);
+      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentTo(30);
+      eq(23500, macroCalculator.getWeeklyCaloricNeeds());
+    },
+
+    'It should return the daily caloric needs for every day.': function() {
+      // Test Diet for cutting
+      macroCalculator.resetProperties();
+      macroCalculator.setIsBulkingTo(false);
+      macroCalculator.setStartingBMRTo(3000);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(1);
+      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentTo(30);
+      eq(2650, macroCalculator.getDailyCaloricNeeds());
+
+      // Test Diet for bulking
+      macroCalculator.resetProperties();
+      macroCalculator.setIsBulkingTo(true);
+      macroCalculator.setStartingBMRTo(3000);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(1);
+      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentTo(30);
+      eq(3357, macroCalculator.getDailyCaloricNeeds());
+    },
+
+    'It should return the daily protein needs for every day.': function() {
+      macroCalculator.resetProperties();
+      macroCalculator.setStartingWeightTo(100);
+      macroCalculator.setDesiredProteinPerBodyWeightTo(1);
+      eq(100, macroCalculator.getDailyProteinNeeds());
+    },
+
+    'It should return the daily fat needs for every day.': function() {
+      // Cutting
+      macroCalculator.resetProperties();
+      macroCalculator.setIsBulkingTo(false);
+      macroCalculator.setStartingBMRTo(3000);
+      macroCalculator.setDesiredTotalFatInPercentTo(30);
+      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentTo(20);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(1);
+      eq(87, macroCalculator.getDailyFatNeeds());
+
+      // Bulking
+      macroCalculator.resetProperties();
+      macroCalculator.setIsBulkingTo(true);
+      macroCalculator.setStartingBMRTo(3000);
+      macroCalculator.setDesiredTotalFatInPercentTo(20);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(1);
+      eq(75, macroCalculator.getDailyFatNeeds());
+    },
+
+    'It should return the daily carbohydrate needs for every day.': function() {
+      // Cutting
+      macroCalculator.resetProperties();
+      macroCalculator.setIsBulkingTo(false);
+      macroCalculator.setStartingBMRTo(3000);
+      macroCalculator.setStartingWeightTo(172);
+      macroCalculator.setDesiredProteinPerBodyWeightTo(1);
+      macroCalculator.setDesiredTotalFatInPercentTo(20);
+      macroCalculator.setDesiredCardioFromWeeklyDeficitInPercentTo(20);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(1);
+      eq(348, macroCalculator.getDailyCarbNeeds());
+
+      // Bulking
+      macroCalculator.resetProperties();
+      macroCalculator.setIsBulkingTo(true);
+      macroCalculator.setStartingBMRTo(3000);
+      macroCalculator.setStartingWeightTo(172);
+      macroCalculator.setDesiredProteinPerBodyWeightTo(1);
+      macroCalculator.setDesiredTotalFatInPercentTo(20);
+      macroCalculator.setDesiredWeeklyWeightChangeTo(1);
+      eq(499, macroCalculator.getDailyCarbNeeds());
     }
+
+    // DONE: Add Daily Caloric Needs
+    // DONE: Add Daily Protein Needs
+    // DONE: Add Daily Fat Needs
+    // DONE: Add Daily Carbohydrate Needs
+    // DONE: Add optional added cardio calories if bulking
   });
 </script>
